@@ -37,18 +37,21 @@ class App extends React.Component {
         </div>
         <button
           onClick={() => {
-            this.setState({
-              activeDeck: {
-                ...this.state.activeDeck,
-                cards: [...this.state.activeDeck.cards, this.state.nCard],
-              },
-              nCard: {
-                frontSide: "",
-                backSide: "",
-              },
-            });
-
-            console.log(this.state.activeDeck);
+            if (
+              this.state.nCard.frontSide.trim() !== "" &&
+              this.state.nCard.backSide.trim() !== ""
+            ) {
+              this.setState({
+                activeDeck: {
+                  ...this.state.activeDeck,
+                  cards: [...this.state.activeDeck.cards, this.state.nCard],
+                },
+                nCard: {
+                  frontSide: "",
+                  backSide: "",
+                },
+              });
+            }
           }}
         >
           create card
@@ -59,7 +62,20 @@ class App extends React.Component {
               <div key={index} style={{ display: "flex", gap: "10px" }}>
                 <div>{card.frontSide}</div>
                 <div>{card.backSide}</div>
-                <input type="checkbox" checked={card.learned}></input>
+                <input
+                  type="checkbox"
+                  checked={card.learned}
+                  onChange={() => {
+                    let updateCard = [...this.state.activeDeck.cards];
+                    updateCard[index].learned = !updateCard[index].learned;
+                    this.setState({
+                      activeDeck: {
+                        ...this.state.activeDeck,
+                        cards: updateCard,
+                      },
+                    });
+                  }}
+                ></input>
               </div>
             );
           })}
