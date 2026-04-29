@@ -5,38 +5,65 @@ import Card from "./Card";
 class App extends React.Component {
   state = {
     decks: [],
+    nCard: new Card(),
+    activeDeck: new Deck("name", null, null, null),
   };
   render() {
-    let nCard;
-    nCard = new Card();
-    let activeDeck = new Deck("name", null, null, null);
-
     return (
       <>
         <div style={{ display: "flex" }}>
           <input
-            id="front"
             type="text"
+            value={this.state.nCard.frontSide}
             onChange={(e) => {
-              nCard.frontSide = e.target.value;
+              const updateCard = new Card(
+                e.target.value,
+                this.state.nCard.backSide,
+              );
+              this.setState({ nCard: updateCard });
             }}
           ></input>
           <input
-            id="back"
             type="text"
+            value={this.state.nCard.backSide}
             onChange={(e) => {
-              nCard.backSide = e.target.value;
+              const updateCard = new Card(
+                this.state.nCard.frontSide,
+                e.target.value,
+              );
+              this.setState({ nCard: updateCard });
             }}
           ></input>
         </div>
         <button
           onClick={() => {
-            activeDeck.addCard(nCard);
-            console.log(activeDeck);
+            this.setState({
+              activeDeck: {
+                ...this.state.activeDeck,
+                cards: [...this.state.activeDeck.cards, this.state.nCard],
+              },
+              nCard: {
+                frontSide: "",
+                backSide: "",
+              },
+            });
+
+            console.log(this.state.activeDeck);
           }}
         >
           create card
         </button>
+        <div>
+          {this.state.activeDeck.cards.map((card, index) => {
+            return (
+              <div key={index} style={{ display: "flex", gap: "10px" }}>
+                <div>{card.frontSide}</div>
+                <div>{card.backSide}</div>
+                <input type="checkbox" checked={card.learned}></input>
+              </div>
+            );
+          })}
+        </div>
       </>
     );
   }
