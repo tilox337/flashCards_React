@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act } from "react";
 import Deck from "./Deck";
 import Card from "./Card";
 
@@ -6,6 +6,7 @@ class App extends React.Component {
   state = {
     decks: [],
     nCard: new Card(),
+    activeDeckNumber: 0,
     activeDeck: new Deck("name", null, null, null),
   };
   render() {
@@ -56,6 +57,40 @@ class App extends React.Component {
         >
           create card
         </button>
+        <div style={{ display: "flex", gap: "10px" }}>
+          {this.state.decks.map((deck, index) => {
+            return (
+              <div key={index}>
+                <button
+                  onClick={() => {
+                    const selectedDeck = this.state.decks[index];
+                    this.setState({
+                      activeDeckNumber: index,
+                      activeDeck: selectedDeck,
+                    });
+                    console.log(
+                      this.state.decks.indexOf(this.state.selectedDeck),
+                    );
+                  }}
+                >
+                  {deck.name}
+                </button>
+              </div>
+            );
+          })}
+          <button
+            onClick={() => {
+              this.setState({
+                decks: [
+                  ...this.state.decks,
+                  new Deck("New deck", null, null, null),
+                ],
+              });
+            }}
+          >
+            Create deck
+          </button>
+        </div>
         <div>
           {this.state.activeDeck.cards.map((card, index) => {
             return (
