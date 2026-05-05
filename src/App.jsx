@@ -7,7 +7,6 @@ class App extends React.Component {
     decks: [new Deck("name", null, null, null)],
     nCard: new Card(),
     activeDeckNumber: 0,
-    activeDeck: new Deck("name", null, null, null),
   };
   render() {
     return (
@@ -130,16 +129,11 @@ class App extends React.Component {
                           ];
                           updateCard[index].learned =
                             !updateCard[index].learned;
+                          const cahngedDeck = this.state.decks;
+                          cahngedDeck[this.state.activeDeckNumber].cards =
+                            updateCard;
                           this.setState({
-                            decks: {
-                              ...this.state.decks,
-                              [activeDeckNumber]: {
-                                ...this.state.decks[
-                                  this.state.activeDeckNumber
-                                ],
-                                cards: updateCard,
-                              },
-                            },
+                            decks: cahngedDeck,
                           });
                         }}
                       ></input>
