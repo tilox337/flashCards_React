@@ -4,7 +4,7 @@ import Card from "./Card";
 
 class App extends React.Component {
   state = {
-    decks: [],
+    decks: [new Deck("name", null, null, null)],
     nCard: new Card(),
     activeDeckNumber: 0,
     activeDeck: new Deck("name", null, null, null),
@@ -42,11 +42,13 @@ class App extends React.Component {
               this.state.nCard.frontSide.trim() !== "" &&
               this.state.nCard.backSide.trim() !== ""
             ) {
+              const cahngedDeck = this.state.decks;
+              cahngedDeck[this.state.activeDeckNumber].cards.push(
+                this.state.nCard,
+              );
               this.setState({
-                activeDeck: {
-                  ...this.state.activeDeck,
-                  cards: [...this.state.activeDeck.cards, this.state.nCard],
-                },
+                decks: cahngedDeck,
+
                 nCard: {
                   frontSide: "",
                   backSide: "",
@@ -61,20 +63,37 @@ class App extends React.Component {
           {this.state.decks.map((deck, index) => {
             return (
               <div key={index}>
-                <button
-                  onClick={() => {
-                    const selectedDeck = this.state.decks[index];
-                    this.setState({
-                      activeDeckNumber: index,
-                      activeDeck: selectedDeck,
-                    });
-                    console.log(
-                      this.state.decks.indexOf(this.state.selectedDeck),
-                    );
-                  }}
-                >
-                  {deck.name}
-                </button>
+                {index === this.state.activeDeckNumber ? (
+                  <input
+                    type="text"
+                    value={this.state.decks[this.state.activeDeckNumber].name}
+                    onChange={(e) => {
+                      const cahngedDeck = this.state.decks;
+                      cahngedDeck[this.state.activeDeckNumber].name =
+                        e.target.value;
+
+                      this.setState({
+                        decks: cahngedDeck,
+
+                        /*activeDeck: {
+                          name: e.target.value,
+                        },*/
+                      });
+                    }}
+                  ></input>
+                ) : (
+                  <button
+                    onClick={() => {
+                      this.setState({
+                        activeDeckNumber: index,
+                        activeDeck: this.state.decks[index],
+                      });
+                      console.log(this.state.activeDeck);
+                    }}
+                  >
+                    {deck.name}
+                  </button>
+                )}
               </div>
             );
           })}
@@ -92,28 +111,43 @@ class App extends React.Component {
           </button>
         </div>
         <div>
-          {this.state.activeDeck.cards.map((card, index) => {
-            return (
-              <div key={index} style={{ display: "flex", gap: "10px" }}>
-                <div>{card.frontSide}</div>
-                <div>{card.backSide}</div>
-                <input
-                  type="checkbox"
-                  checked={card.learned}
-                  onChange={() => {
-                    let updateCard = [...this.state.activeDeck.cards];
-                    updateCard[index].learned = !updateCard[index].learned;
-                    this.setState({
-                      activeDeck: {
-                        ...this.state.activeDeck,
-                        cards: updateCard,
-                      },
-                    });
-                  }}
-                ></input>
-              </div>
-            );
-          })}
+          {this.state.decks !== []
+            ? this.state.decks[this.state.activeDeckNumber].cards.map(
+                (card, index) => {
+                  console.log(this.state.decks[this.state.activeDeckNumber]);
+
+                  return (
+                    <div key={index} style={{ display: "flex", gap: "10px" }}>
+                      <div>{card.frontSide}</div>
+                      <div>{card.backSide}</div>
+                      <input
+                        type="checkbox"
+                        checked={card.learned}
+                        onChange={() => {
+                          let updateCard = [
+                            ...this.state.decks[this.state.activeDeckNumber]
+                              .cards,
+                          ];
+                          updateCard[index].learned =
+                            !updateCard[index].learned;
+                          this.setState({
+                            decks: {
+                              ...this.state.decks,
+                              [activeDeckNumber]: {
+                                ...this.state.decks[
+                                  this.state.activeDeckNumber
+                                ],
+                                cards: updateCard,
+                              },
+                            },
+                          });
+                        }}
+                      ></input>
+                    </div>
+                  );
+                },
+              )
+            : {}}
         </div>
       </>
     );
