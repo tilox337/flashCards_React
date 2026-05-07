@@ -8,6 +8,13 @@ class App extends React.Component {
     nCard: new Card(),
     activeDeckNumber: 0,
   };
+
+  deleteElementOfArrayInState = (element, keyName) => {
+    const filtered = this.state[keyName].filter((e) => e !== element);
+
+    this.setState({ [keyName]: filtered });
+  };
+
   render() {
     return (
       <>
@@ -58,28 +65,42 @@ class App extends React.Component {
         >
           create card
         </button>
+
         <div style={{ display: "flex", gap: "10px" }}>
           {this.state.decks.map((deck, index) => {
             return (
               <div key={index}>
                 {index === this.state.activeDeckNumber ? (
-                  <input
-                    type="text"
-                    value={this.state.decks[this.state.activeDeckNumber].name}
-                    onChange={(e) => {
-                      const cahngedDeck = this.state.decks;
-                      cahngedDeck[this.state.activeDeckNumber].name =
-                        e.target.value;
+                  <>
+                    <input
+                      type="text"
+                      value={this.state.decks[this.state.activeDeckNumber].name}
+                      onChange={(e) => {
+                        const cahngedDeck = this.state.decks;
+                        cahngedDeck[this.state.activeDeckNumber].name =
+                          e.target.value;
 
-                      this.setState({
-                        decks: cahngedDeck,
+                        this.setState({
+                          decks: cahngedDeck,
 
-                        /*activeDeck: {
+                          /*activeDeck: {
                           name: e.target.value,
                         },*/
-                      });
-                    }}
-                  ></input>
+                        });
+                      }}
+                    ></input>
+                    <button
+                      onClick={() => {
+                        this.deleteElementOfArrayInState(
+                          this.state.decks[this.state.activeDeckNumber],
+                          "decks",
+                        );
+                        this.state.activeDeckNumber = 0;
+                      }}
+                    >
+                      X
+                    </button>
+                  </>
                 ) : (
                   <button
                     onClick={() => {
@@ -87,7 +108,6 @@ class App extends React.Component {
                         activeDeckNumber: index,
                         activeDeck: this.state.decks[index],
                       });
-                      console.log(this.state.activeDeck);
                     }}
                   >
                     {deck.name}
@@ -113,8 +133,6 @@ class App extends React.Component {
           {this.state.decks !== []
             ? this.state.decks[this.state.activeDeckNumber].cards.map(
                 (card, index) => {
-                  console.log(this.state.decks[this.state.activeDeckNumber]);
-
                   return (
                     <div key={index} style={{ display: "flex", gap: "10px" }}>
                       <div>{card.frontSide}</div>
@@ -137,6 +155,13 @@ class App extends React.Component {
                           });
                         }}
                       ></input>
+                      <button
+                        onClick={() => {
+                          this.deleteElementOfArrayInState(card, "cards");
+                        }}
+                      >
+                        x
+                      </button>
                     </div>
                   );
                 },
