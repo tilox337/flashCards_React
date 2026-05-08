@@ -4,7 +4,7 @@ import Card from "./Card";
 
 class App extends React.Component {
   state = {
-    decks: [new Deck("name")],
+    decks: [],
     nCard: new Card(),
     activeDeckNumber: 0,
   };
@@ -104,7 +104,7 @@ class App extends React.Component {
                           this.state.decks[this.state.activeDeckNumber],
                           "decks",
                         );
-                        this.state.activeDeckNumber = 0;
+                        this.setState({ activeDeckNumber: 0 });
                       }}
                     >
                       X
@@ -135,51 +135,47 @@ class App extends React.Component {
           </button>
         </div>
         <div>
-          {this.state.decks !== []
-            ? this.state.decks[this.state.activeDeckNumber].cards.map(
-                (card, index) => {
-                  return (
-                    <div key={index} style={{ display: "flex", gap: "10px" }}>
-                      <div>{card.frontSide}</div>
-                      <div>{card.backSide}</div>
-                      <input
-                        type="checkbox"
-                        checked={card.learned}
-                        onChange={() => {
-                          let updateCard = [
-                            ...this.state.decks[this.state.activeDeckNumber]
-                              .cards,
-                          ];
-                          updateCard[index].learned =
-                            !updateCard[index].learned;
-                          const cahngedDeck = this.state.decks;
-                          cahngedDeck[this.state.activeDeckNumber].cards =
-                            updateCard;
-                          this.setState({
-                            decks: cahngedDeck,
-                          });
-                        }}
-                      ></input>
-                      <button
-                        onClick={() => {
-                          this.setState({ nCard: card });
-                          this.deleteCardInState(card);
-                        }}
-                      >
-                        change
-                      </button>
-                      <button
-                        onClick={() => {
-                          this.deleteCardInState(card);
-                        }}
-                      >
-                        x
-                      </button>
-                    </div>
-                  );
-                },
-              )
-            : {}}
+          {this.state.decks[this.state.activeDeckNumber]?.cards?.map(
+            (card, index) => {
+              return (
+                <div key={index} style={{ display: "flex", gap: "10px" }}>
+                  <div>{card.frontSide}</div>
+                  <div>{card.backSide}</div>
+                  <input
+                    type="checkbox"
+                    checked={card.learned}
+                    onChange={() => {
+                      let updateCard = [
+                        ...this.state.decks[this.state.activeDeckNumber].cards,
+                      ];
+                      updateCard[index].learned = !updateCard[index].learned;
+                      const cahngedDeck = this.state.decks;
+                      cahngedDeck[this.state.activeDeckNumber].cards =
+                        updateCard;
+                      this.setState({
+                        decks: cahngedDeck,
+                      });
+                    }}
+                  ></input>
+                  <button
+                    onClick={() => {
+                      this.setState({ nCard: card });
+                      this.deleteCardInState(card);
+                    }}
+                  >
+                    change
+                  </button>
+                  <button
+                    onClick={() => {
+                      this.deleteCardInState(card);
+                    }}
+                  >
+                    x
+                  </button>
+                </div>
+              );
+            },
+          )}
         </div>
       </>
     );
