@@ -1,5 +1,3 @@
-import React from "react";
-
 class Card {
   constructor(frontSide = "", backSide = "", learned = false) {
     this.frontSide = frontSide;

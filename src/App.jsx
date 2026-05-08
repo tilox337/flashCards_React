@@ -4,16 +4,29 @@ import Card from "./Card";
 
 class App extends React.Component {
   state = {
-    decks: [new Deck("name", null, null, null)],
+    decks: [new Deck("name")],
     nCard: new Card(),
     activeDeckNumber: 0,
   };
 
-  deleteElementOfArrayInState = (element, keyName) => {
-    const filtered = this.state[keyName].filter((e) => e !== element);
+  deleteDeckInState = (element) => {
+    const filtered = this.state.decks.filter((e) => e !== element);
 
-    this.setState({ [keyName]: filtered });
+    this.setState({ decks: filtered });
   };
+  deleteCardInState = (element) => {
+    const updetedCards = this.state.decks[
+      this.state.activeDeckNumber
+    ].cards.filter((e) => e !== element);
+    const temp = this.state.decks;
+    temp[this.state.activeDeckNumber].cards = updetedCards;
+    this.setState({ decks: temp });
+  };
+
+  componentDidMount() {
+    const data = localStorage.getItem("decks");
+    this.setState({ decks: data ? JSON.parse(data) : [] });
+  }
 
   render() {
     return (
@@ -61,11 +74,11 @@ class App extends React.Component {
                 },
               });
             }
+            localStorage.setItem("decks", JSON.stringify(this.state.decks));
           }}
         >
           create card
         </button>
-
         <div style={{ display: "flex", gap: "10px" }}>
           {this.state.decks.map((deck, index) => {
             return (
@@ -82,16 +95,12 @@ class App extends React.Component {
 
                         this.setState({
                           decks: cahngedDeck,
-
-                          /*activeDeck: {
-                          name: e.target.value,
-                        },*/
                         });
                       }}
                     ></input>
                     <button
                       onClick={() => {
-                        this.deleteElementOfArrayInState(
+                        this.deleteDeckInState(
                           this.state.decks[this.state.activeDeckNumber],
                           "decks",
                         );
@@ -119,10 +128,7 @@ class App extends React.Component {
           <button
             onClick={() => {
               this.setState({
-                decks: [
-                  ...this.state.decks,
-                  new Deck("New deck", null, null, null),
-                ],
+                decks: [...this.state.decks, new Deck("New deck")],
               });
             }}
           >
@@ -157,7 +163,15 @@ class App extends React.Component {
                       ></input>
                       <button
                         onClick={() => {
-                          this.deleteElementOfArrayInState(card, "cards");
+                          this.setState({ nCard: card });
+                          this.deleteCardInState(card);
+                        }}
+                      >
+                        change
+                      </button>
+                      <button
+                        onClick={() => {
+                          this.deleteCardInState(card);
                         }}
                       >
                         x
