@@ -4,78 +4,90 @@ import Card from "./Card";
 
 class Study extends React.Component {
   state = {
-    decks: [new Deck("name")],
+    decks: [],
     activeDeckNumber: 0,
     nowCard: 0,
-    nowSide: "asdasd",
+    isFront: true,
   };
 
   componentDidMount() {
     const data = localStorage.getItem("decks");
-    this.setState({ decks: data ? JSON.parse(data) : [] });
+    if (data) this.setState({ decks: JSON.parse(data) });
   }
+
+  changeCard = (step) => {
+    const cards = this.state.decks[this.state.activeDeckNumber]?.cards || [];
+    if (cards.length > 0) {
+      this.setState({
+        nowCard: (this.state.nowCard + step + cards.length) % cards.length,
+        isFront: true,
+      });
+    }
+  };
+
   render() {
     return (
       <>
-        <div style={{ display: "flex", gap: "10px" }}>
-          {this.state.decks.map((deck, index) => {
-            return (
-              <div key={index}>
-                <button
-                  onClick={() => {
-                    this.setState({
-                      activeDeckNumber: index,
-                      nowCard: 0,
-                    });
-                  }}
-                >
-                  {deck.name}
-                </button>
-              </div>
-            );
-          })}
-        </div>
         <div>
-          <button
-            onClick={() => {
-              this.setState({
-                nowCard:
-                  (this.state.nowCard -
-                    1 +
-                    this.state.decks[this.state.activeDeckNumber].cards
-                      .length) %
-                  this.state.decks[this.state.activeDeckNumber].cards.length,
-              });
-            }}
-          ></button>
-          <button
-            onClick={() => {
-              this.setState({
-                nowSide:
-                  this.state.decks[this.state.activeDeckNumber].cards[
-                    this.state.nowCard
-                  ].frontSide !== this.state.nowSide
-                    ? this.state.decks[this.state.activeDeckNumber].cards[
-                        this.state.nowCard
-                      ].frontSide
-                    : this.state.decks[this.state.activeDeckNumber].cards[
-                        this.state.nowCard
-                      ].backSide,
-              });
-            }}
-          >
-            {this.state.nowSide}
-          </button>
-          <button
-            onClick={() => {
-              this.setState({
-                nowCard:
-                  (this.state.nowCard + 1) %
-                  this.state.decks[this.state.activeDeckNumber].cards.length,
-              });
-            }}
-          ></button>
+          {this.state.decks.map((deck, index) => (
+            <button
+              key={index}
+              onClick={() =>
+                this.setState({
+                  activeDeckNumber: index,
+                  nowCard: 0,
+                  isFront: true,
+                })
+              }
+            >
+              {deck.name}
+            </button>
+          ))}
         </div>
+
+        {this.state.decks[this.state.activeDeckNumber]?.cards?.[
+          this.state.nowCard
+        ] ? (
+          <div>
+            <button onClick={() => this.changeCard(-1)}>{"<-"}</button>
+            <button
+              onClick={() => this.setState({ isFront: !this.state.isFront })}
+            >
+              {this.state.isFront
+                ? this.state.decks[this.state.activeDeckNumber].cards[
+                    this.state.nowCard
+                  ].frontSide
+                : this.state.decks[this.state.activeDeckNumber].cards[
+                    this.state.nowCard
+                  ].backSide}
+            </button>
+            <button onClick={() => this.changeCard(1)}>{"->"}</button>
+
+            <input
+              type="checkbox"
+              checked={
+                !!this.state.decks[this.state.activeDeckNumber].cards[
+                  this.state.nowCard
+                ].learned
+              }
+              onChange={() => {
+                const temp = [...this.state.decks];
+                temp[this.state.activeDeckNumber].cards[
+                  this.state.nowCard
+                ].learned =
+                  !temp[this.state.activeDeckNumber].cards[this.state.nowCard]
+                    .learned;
+
+                this.setState({ decks: temp }, () => {
+                  localStorage.setItem(
+                    "decks",
+                    JSON.stringify(this.state.decks),
+                  );
+                });
+              }}
+            />
+          </div>
+        ) : null}
       </>
     );
   }

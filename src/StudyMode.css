@@ -1,0 +1,50 @@
+.study-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.decks-bar {
+  display: flex;
+  gap: 10px;
+}
+
+.deck-select-btn {
+  padding: 8px 16px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+}
+
+.study-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-btn {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.flash-card {
+  width: 250px;
+  height: 150px;
+  font-size: 20px;
+  cursor: pointer;
+  background: #fdfdfd;
+  border: 2px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.learned-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}

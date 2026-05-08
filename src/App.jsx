@@ -13,6 +13,7 @@ class App extends React.Component {
     const filtered = this.state.decks.filter((e) => e !== element);
 
     this.setState({ decks: filtered });
+    localStorage.setItem("decks", JSON.stringify(this.state.decks));
   };
   deleteCardInState = (element) => {
     const updetedCards = this.state.decks[
@@ -21,10 +22,12 @@ class App extends React.Component {
     const temp = this.state.decks;
     temp[this.state.activeDeckNumber].cards = updetedCards;
     this.setState({ decks: temp });
+    localStorage.setItem("decks", JSON.stringify(this.state.decks));
   };
 
   componentDidMount() {
     const data = localStorage.getItem("decks");
+    console.log(data);
     this.setState({ decks: data ? JSON.parse(data) : [] });
   }
 
