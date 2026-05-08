@@ -1,6 +1,5 @@
 import React from "react";
-import Deck from "./Deck";
-import Card from "./Card";
+import "./StudyMode.css";
 
 class Study extends React.Component {
   state = {
@@ -27,11 +26,12 @@ class Study extends React.Component {
 
   render() {
     return (
-      <>
-        <div>
+      <div className="study-container">
+        <div className="deck-nav">
           {this.state.decks.map((deck, index) => (
             <button
               key={index}
+              className="deck-btn"
               onClick={() =>
                 this.setState({
                   activeDeckNumber: index,
@@ -48,9 +48,12 @@ class Study extends React.Component {
         {this.state.decks[this.state.activeDeckNumber]?.cards?.[
           this.state.nowCard
         ] ? (
-          <div>
-            <button onClick={() => this.changeCard(-1)}>{"<-"}</button>
+          <div className="card-area">
+            <button className="nav-arrow" onClick={() => this.changeCard(-1)}>
+              {"<-"}
+            </button>
             <button
+              className="flash-card"
               onClick={() => this.setState({ isFront: !this.state.isFront })}
             >
               {this.state.isFront
@@ -61,36 +64,41 @@ class Study extends React.Component {
                     this.state.nowCard
                   ].backSide}
             </button>
-            <button onClick={() => this.changeCard(1)}>{"->"}</button>
+            <button className="nav-arrow" onClick={() => this.changeCard(1)}>
+              {"->"}
+            </button>
 
-            <input
-              type="checkbox"
-              checked={
-                !!this.state.decks[this.state.activeDeckNumber].cards[
-                  this.state.nowCard
-                ].learned
-              }
-              onChange={() => {
-                const temp = [...this.state.decks];
-                temp[this.state.activeDeckNumber].cards[
-                  this.state.nowCard
-                ].learned =
-                  !temp[this.state.activeDeckNumber].cards[this.state.nowCard]
-                    .learned;
-
-                this.setState({ decks: temp }, () => {
-                  localStorage.setItem(
-                    "decks",
-                    JSON.stringify(this.state.decks),
-                  );
-                });
-              }}
-            />
+            <div className="learned-footer">
+              learned
+              <input
+                type="checkbox"
+                checked={
+                  !!this.state.decks[this.state.activeDeckNumber].cards[
+                    this.state.nowCard
+                  ].learned
+                }
+                onChange={() => {
+                  const temp = [...this.state.decks];
+                  temp[this.state.activeDeckNumber].cards[
+                    this.state.nowCard
+                  ].learned =
+                    !temp[this.state.activeDeckNumber].cards[this.state.nowCard]
+                      .learned;
+                  this.setState({ decks: temp }, () => {
+                    localStorage.setItem(
+                      "decks",
+                      JSON.stringify(this.state.decks),
+                    );
+                  });
+                }}
+              />
+            </div>
           </div>
-        ) : null}
-      </>
+        ) : (
+          <div>It is empty deck</div>
+        )}
+      </div>
     );
   }
 }
-
 export default Study;
