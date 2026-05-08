@@ -115,7 +115,6 @@ class App extends React.Component {
                     onClick={() => {
                       this.setState({
                         activeDeckNumber: index,
-                        activeDeck: this.state.decks[index],
                       });
                     }}
                   >

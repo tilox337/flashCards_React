@@ -5,6 +5,9 @@ import Card from "./Card";
 class Study extends React.Component {
   state = {
     decks: [new Deck("name")],
+    activeDeckNumber: 0,
+    nowCard: 0,
+    nowSide: "asdasd",
   };
 
   componentDidMount() {
@@ -22,7 +25,7 @@ class Study extends React.Component {
                   onClick={() => {
                     this.setState({
                       activeDeckNumber: index,
-                      activeDeck: this.state.decks[index],
+                      nowCard: 0,
                     });
                   }}
                 >
@@ -33,9 +36,45 @@ class Study extends React.Component {
           })}
         </div>
         <div>
-          <button></button>
-          <button></button>
-          <button></button>
+          <button
+            onClick={() => {
+              this.setState({
+                nowCard:
+                  (this.state.nowCard -
+                    1 +
+                    this.state.decks[this.state.activeDeckNumber].cards
+                      .length) %
+                  this.state.decks[this.state.activeDeckNumber].cards.length,
+              });
+            }}
+          ></button>
+          <button
+            onClick={() => {
+              this.setState({
+                nowSide:
+                  this.state.decks[this.state.activeDeckNumber].cards[
+                    this.state.nowCard
+                  ].frontSide !== this.state.nowSide
+                    ? this.state.decks[this.state.activeDeckNumber].cards[
+                        this.state.nowCard
+                      ].frontSide
+                    : this.state.decks[this.state.activeDeckNumber].cards[
+                        this.state.nowCard
+                      ].backSide,
+              });
+            }}
+          >
+            {this.state.nowSide}
+          </button>
+          <button
+            onClick={() => {
+              this.setState({
+                nowCard:
+                  (this.state.nowCard + 1) %
+                  this.state.decks[this.state.activeDeckNumber].cards.length,
+              });
+            }}
+          ></button>
         </div>
       </>
     );
