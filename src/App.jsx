@@ -11,18 +11,22 @@ class App extends React.Component {
   };
 
   deleteDeckInState = (element) => {
-    const filtered = this.state.decks.filter((e) => e !== element);
-    this.setState({ decks: filtered });
+    {
+      const filtered = this.state.decks.filter((e) => e !== element);
+      this.setState({ decks: filtered });
+    }
     localStorage.setItem("decks", JSON.stringify(this.state.decks));
   };
 
   deleteCardInState = (element) => {
-    const updetedCards = this.state.decks[
-      this.state.activeDeckNumber
-    ].cards.filter((e) => e !== element);
-    const temp = [...this.state.decks];
-    temp[this.state.activeDeckNumber].cards = [...updetedCards];
-    this.setState({ decks: temp });
+    {
+      const updetedCards = this.state.decks[
+        this.state.activeDeckNumber
+      ].cards.filter((e) => e !== element);
+      const temp = [...this.state.decks];
+      temp[this.state.activeDeckNumber].cards = [...updetedCards];
+      this.setState({ decks: temp });
+    }
     localStorage.setItem("decks", JSON.stringify(this.state.decks));
   };
 
@@ -40,11 +44,12 @@ class App extends React.Component {
             type="text"
             value={this.state.nCard.frontSide}
             onChange={(e) => {
-              const updateCard = new Card(
-                e.target.value,
-                this.state.nCard.backSide,
-              );
-              this.setState({ nCard: updateCard });
+              this.setState({
+                nCard: {
+                  ...this.state.nCard,
+                  frontSide: e.target.value,
+                },
+              });
             }}
           />
           <input
@@ -52,11 +57,12 @@ class App extends React.Component {
             type="text"
             value={this.state.nCard.backSide}
             onChange={(e) => {
-              const updateCard = new Card(
-                this.state.nCard.frontSide,
-                e.target.value,
-              );
-              this.setState({ nCard: updateCard });
+              this.setState({
+                nCard: {
+                  ...this.state.nCard,
+                  backSide: e.target.value,
+                },
+              });
             }}
           />
         </div>
@@ -68,16 +74,22 @@ class App extends React.Component {
               this.state.nCard.frontSide.trim() !== "" &&
               this.state.nCard.backSide.trim() !== ""
             ) {
-              const cahngedDeck = this.state.decks;
-              cahngedDeck[this.state.activeDeckNumber].cards.push(
-                this.state.nCard,
-              );
+              const updatedDecks = [...this.state.decks];
+              const cahngedDeck = {
+                ...this.state.decks[this.state.activeDeckNumber],
+                cards: [
+                  ...updatedDecks[this.state.activeDeckNumber].cards,
+                  this.state.nCard,
+                ],
+              };
+              updatedDecks[this.state.activeDeckNumber] = cahngedDeck;
+
               this.setState({
-                decks: cahngedDeck,
+                decks: updatedDecks,
                 nCard: { frontSide: "", backSide: "" },
               });
             } else {
-              this.setState({ err: "заполните оба поля" });
+              this.setState({ err: "fill both inputs" });
               setTimeout(() => {
                 this.setState({ err: "" });
               }, 3000);
@@ -177,7 +189,9 @@ class App extends React.Component {
                     ];
                     updateCard[index].learned = !updateCard[index].learned;
                     const cahngedDeck = this.state.decks;
-                    cahngedDeck[this.state.activeDeckNumber].cards = updateCard;
+                    cahngedDeck[this.state.activeDeckNumber].cards = [
+                      ...updateCard,
+                    ];
                     this.setState({ decks: cahngedDeck });
                   }}
                 />
